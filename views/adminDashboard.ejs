@@ -1,0 +1,228 @@
+<script >function start(){updateData()}</script>
+
+<div id="popup" style="cursor:pointer;z-index:1000;display:none;position:fixed; top:5%; left:5%; width:90%; height:90%; overflow-y:scroll;background-color:black; opacity:0.95">
+      
+    <div style="color:black;float: right;margin: 2%;font-size: larger;" onclick="closepopup()" >  ❎  </div>
+
+    <section class="stuff-section"">
+      <div class="container">
+        <div class="row">
+          <div class="col-xs-12 column text-center">
+            <h3 id="userData" style="color:aliceblue;margin:0px">  </h3>
+            <h3 id="name"  style="color:aliceblue;margin:0px"> </h3>
+            <h2 style="color:white;text-align: center;margin:0px">Heart Beats Per Minute chart</h2>
+            <canvas id="CanvaBPM"></canvas>  
+            <hr>
+            <h2 style="color:white;text-align: center;margin:0px">SpO2</h2>
+            <canvas id="CanvaSpO2"></canvas>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+  </div>
+
+
+<div class="w3-content" style="max-width:100vw;background-color:aliceblue">
+    <div class="w3-grayscale" style="align-items:stretch;height:100%" >
+        <div class="w3-twothird" style="padding: 15px;align-items: stretch;background-color:black;min-height:100vh;align-items: center;color:aliceblue">
+            <div id="logoleft" style="overflow: hidden;">
+                <img src="/img/logo3.png" style="height:60px;position: relative; float:right"> 
+            </div>
+            <div id="logotop" style="overflow: hidden;align-content: center;">
+                <img src="/img/logo3.png" style="max-width:80%;height:60px;position: relative; float:right ">
+                <h2 style="height:60px;position: relative;color:aliceblue;float:right;text-align: center; ">
+                    IOT BASED HEART RATE MONITORING SYSTEM 
+                </h2>
+            </div>
+            <hr>
+            
+            <h3 style="color:aliceblue;display: flex; justify-content: space-evenly;">Hello <%= typeof user.name != 'undefined' ? user.name : '' %></h3>
+            <div id="parent" class="w3-row-padding"></div>
+            
+
+            
+            <script>
+                var dict={}
+                function updateData(){
+                    var xhttp = new XMLHttpRequest();
+                    xhttp.onreadystatechange = function() {
+                        if (this.readyState == 4 && this.status == 200) {
+                            // Typical action to be performed when the document is ready:
+                            const res=xhttp.responseText
+                            const data= JSON.parse(res)
+                            console.log(data.feeds[0])
+                            dict={}
+                            for(i=0;i<data.feeds.length;i++){
+                                try{dict[data.feeds[i].field3].push({time:new Date(data.feeds[i].created_at),BPM:data.feeds[i].field1,SpO2:data.feeds[i].field2})}
+                                catch{dict[data.feeds[i].field3]=[{time:new Date(data.feeds[i].created_at),BPM:data.feeds[i].field1,SpO2:data.feeds[i].field2}]}
+                            }
+                            var p=document.getElementById("parent");
+                            p.innerHTML="";
+                            for(i in dict ){ 
+                                if (i != 'null'){
+                                    p.innerHTML=p.innerHTML+'<div class="w3-third onclick=popup('+i+')"><h3 style="cursor: pointer;background-color: darkgoldenrod;color:aliceblue;display: flex; justify-content: space-evenly;">User'+i+'</h3><div style="width: 50%;text-align:center;color: black; background-color: aqua;float:left;height: 100px;">Heat Beats Per Minute<h2 id="BPM'+i+'">'+dict[i][0].BPM+'</h2></div><div style="width: 50%;color:black;text-align:center; background-color:azure;float:right;height:100px">SpO2<h2 id="spo2'+i+'">'+dict[i][0].SpO2+'</h2></div></div>'
+                                }
+                            }
+                            console.log(dict)
+
+                            }
+                        };
+                    xhttp.open("GET", "https://api.thingspeak.com/channels/<%= typeof user.adminConnectedDevices.ChannelID != 'undefined' ? user.adminConnectedDevices.ChannelID : '' %>/feeds.json?api_key=<%= typeof user.adminConnectedDevices.readAPIKey != 'undefined' ? user.adminConnectedDevices.readAPIKey : '' %>", true);
+                    xhttp.send();
+                    setTimeout(updateData, 10000);
+                }
+
+                function popup(ID){
+                    
+                    document.getElementById("popup").style.display="block"
+                    document.getElementById("userData").innerText="User"+ID
+                    
+                
+                    var xhttp = new XMLHttpRequest();
+                    xhttp.onreadystatechange = function() {
+                        if (this.readyState == 4 && this.status == 200) {
+                            var name=xhttp.responseText
+                            document.getElementById("name").innerText=name                         
+                        }}
+                    xhttp.open("POST",'/users/name',true)
+                    xhttp.send("userID="+ID);
+                }
+
+            </script>
+
+            
+            <style>
+
+
+
+
+                .cc {
+                    width: 100%;
+                    display: -webkit-box;
+                    display: -webkit-flex;
+                    display: -moz-box;
+                    display: -ms-flexbox;
+                    display: flex;
+                    flex-wrap: wrap;
+                    justify-content: center;
+                    align-items: center;
+                    background-repeat: no-repeat;
+                    background-position: center;
+                    background-size: cover;
+                    position: relative;
+                    z-index: 1;
+                }
+                
+                        </style>
+            
+    </div>   
+        <div class="w3-third" style="padding:15px;align-items: center;min-height:100vh;align-items: center;background-color:aliceblue">
+            <div id="logoright" style="overflow: hidden;">
+                <h2 style="height:60px;position: relative; ">
+                    IOT BASED HEART RATE MONITORING SYSTEM 
+                </h2>
+                <hr style="border: 1px solid black;">
+            </div>
+            <div id="logotop" style="overflow: hidden;">
+                <br>
+            </div>
+            <h3 style="color:black;display: flex; justify-content: space-evenly;text-align: center;"><b>Project By:-<br>  KAUSAGEN A/L GANASKUMAR
+                (181021056)
+                </b></h3>
+            <div style="color:black;display: flex; justify-content: space-evenly;text-align:center" >Bachelor of Engineering (Computer Engineering) </div>
+
+            <div style="color:black;display: flex; justify-content: space-evenly;text-align:center" ><strong>Faculty of Electronic Engineering Technology (FTKEN) <br>UNIVERSITI MALAYSIA PERLIS
+                </strong></div>
+
+            
+        </div>
+        
+        
+
+        </script>
+    </div>
+    <div class="w3-grayscale" style="align-items: center;height:100%">
+        <a href="/users/settings" style="display:flex;position:fixed;top:15px">
+            <i style="color:aliceblue" id="settings-btn"  class="fa  fa-gear fa-4x"></i>
+        </a>
+    </div>
+
+</div>
+
+
+<style>
+                #canvas{
+                    width: -webkit-fill-available;
+                    padding-top: 0%;
+                    padding-left:10%;
+                    padding-right:10%;
+                    max-height: 400px;
+                }
+
+                #canvas-container {
+                    margin-left: 15%;
+                    padding:15px;
+                    line-height: 0;
+                }
+
+                #logotop{
+                    display:none;
+                }
+            @media   only screen and (max-width: 600px) {
+                #canvas {
+                    width: -webkit-fill-available;
+                    padding-top: 0%;
+                    padding-left:5%;
+                    padding-right:5%;
+                    max-height: 100vw;
+                }
+                #canvas-container {
+                    margin-left: 5%;
+                    padding:5px;
+                    line-height: 0;
+                }
+                #logoright {
+                    display: none;
+                    }
+                #logoleft{
+                    display:none;
+                }
+                #logotop{
+                    display:block;
+                }
+            }
+    #settings-btn {
+        animation: App-logo-spin infinite 5s linear;
+    }
+    #settings-btn:hover {
+        pointer-events: none;
+        color:aqua;
+        animation: App-logo-spin infinite 1s linear;
+    }
+    @media (prefers-reduced-motion: no-preference) {
+        #settings-btn {
+            animation: App-logo-spin infinite 5s linear;
+        }
+    }
+    
+    @keyframes App-logo-spin {
+        from {
+            transform: rotate(0deg);
+        }
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    a:link {
+        color: rgb(0, 0, 0);
+    }
+
+        /* mouse over link */
+    a:hover {
+        color: rgb(105, 115, 255);
+    }
+
+</style>
+

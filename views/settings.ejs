@@ -1,0 +1,116 @@
+<html>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--===============================================================================================-->	
+	
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="/vendor/bootstrap/css/bootstrap.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="/fonts/Linearicons-Free-v1.0.0/icon-font.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="/vendor/animate/animate.css">
+<!--===============================================================================================-->	
+	<link rel="stylesheet" type="text/css" href="/vendor/css-hamburgers/hamburgers.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="/vendor/animsition/css/animsition.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="/vendor/select2/select2.min.css">
+<!--===============================================================================================-->	
+	<link rel="stylesheet" type="text/css" href="/vendor/daterangepicker/daterangepicker.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="/css/util.css">
+	<link rel="stylesheet" type="text/css" href="/css/main.css">
+    
+      <link rel="stylesheet" href="/css/components.css">
+      <link rel="stylesheet" href="/css/icons.css">
+      <link rel="stylesheet" href="/css/responsee.css">
+      <link rel="stylesheet" href="/owl-carousel/owl.carousel.css">
+      <link rel="stylesheet" href="/owl-carousel/owl.theme.css">
+      <!-- CUSTOM STYLE -->      
+      <link rel="stylesheet" href="/css/template-style.css">
+      <link href="https://fonts.googleapis.com/css?family=Barlow:100,300,400,700,800&amp;subset=latin-ext" rel="stylesheet">  
+      <script type="text/javascript" src="/js/jquery-1.8.3.min.js"></script>
+      <script type="text/javascript" src="/js/jquery-ui.min.js"></script>   
+
+
+<title>Jason Storage</title>
+</head>
+<style>
+    
+
+    .cc {
+        width: 100%;
+        min-height: 100vh;
+        display: -webkit-box;
+        display: -webkit-flex;
+        display: -moz-box;
+        display: -ms-flexbox;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        padding: 15px;
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: cover;
+        position: relative;
+        z-index: 1;
+    }
+    </style>
+
+    
+<div id="abc"  class="limiter background-dark">
+    <div class="w3-grayscale" style="align-items: center;height:100%">
+        
+            <h2><a href="/dashboard" style="display:flex;position:fixed;top:0;right:5%;z-index: 10;" >Close X</a>Welcome <%= typeof name != 'undefined' ? name : '' %></h2>
+    </div>
+    <div class="cc" >
+        <div class="wrap-login100 p-t-30 p-b-50">
+            <a  href="/"style="min-width:250px;width:25%;" ><img src="/img/logo1White.png"  alt=""></a>
+            <hr>
+            <span class="login100-form-title p-b-41">
+                Accout Settings
+            </span>
+            <form action="/users/settings" onsubmit="return confirm('Are you sure you want to edit?');" method="POST" class="login100-form validate-form p-b-33 p-t-5">
+
+                <div class="wrap-input100 validate-input" >
+                    <span class="input100">Channel ID</span>
+                    <input class="input100" type="string" name="ChannelID" value="<%= typeof ChannelID != 'undefined' ? ChannelID : '' %>" placeholder="Channel ID">
+                </div>
+
+                <div class="wrap-input100 validate-input" >
+                    <span class="input100">Write API Key</span>
+                    <input class="input100" type="string" name="writeAPIKey" value="<%= typeof writeAPIKey != 'undefined' ? writeAPIKey : '' %>" placeholder="Write API Key">
+                </div>
+                
+                <div class="wrap-input100 validate-input" >
+                    <span class="input100">Read API Key</span>
+                    <input class="input100" type="string" name="readAPIKey" value="<%= typeof readAPIKey != 'undefined' ? readAPIKey : '' %>" placeholder="Read API Key">
+                </div>
+
+                <div class="container-login100-form-btn m-t-32">
+                    <button type="submit" class="login100-form-btn">
+                        Save 
+                    </button>
+                </div>
+                <div id="dropDownSelect1" style="color: rgb(0, 0, 0);text-align: center;"><br><a href="/users/logout">Login Using other account</div>
+            </form>
+
+
+        </div>
+    </div>
+</div>
+</a>
+<script>
+
+function start(){
+    if ("<%= typeof successmessage != 'undefined' ? successmessage : 'nomessage' %>" == "updated"){
+        alert("Updated Successfully")
+    }
+
+}
+</script>
+
+</html>

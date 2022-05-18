@@ -1,0 +1,34 @@
+{
+  "name": "IOT BASED HEART RATE MONITORING SYSTEM",
+  "version": "1.0.0",
+  "description": "by:- KAUSAGEN A/L GANASKUMAR",
+  "main": "app.js",
+  "scripts": {
+    "test": "node app.js"
+  },
+  "engines": {
+    "node": "16.14.0"
+  },
+  "private": true,
+  "author": "ankitmawle",
+  "license": "MIT",
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "connect-flash": "^0.1.1",
+    "cookie-session": "^2.0.0",
+    "dotenv": "^16.0.0",
+    "ejs": "^3.1.6",
+    "express": "^4.17.3",
+    "express-ejs-layouts": "^2.5.1",
+    "express-session": "^1.17.2",
+    "mongoose": "^6.2.6",
+    "passport": "^0.5.2",
+    "passport-local": "^1.0.0",
+    "workbox-cacheable-response": "^6.5.1",
+    "workbox-expiration": "^6.5.1",
+    "workbox-precaching": "^6.5.1",
+    "workbox-routing": "^6.5.1",
+    "workbox-strategies": "^6.5.1",
+    "workbox-window": "^6.5.1"
+  }
+}

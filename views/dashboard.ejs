@@ -1,0 +1,198 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+<div class="w3-content" style="max-width:100vw;background-color:aliceblue">
+    <div class="w3-grayscale" style="align-items:stretch;height:100%" >
+        <div class="w3-half" style="padding: 15px;align-items: stretch;background-color:black;min-height:100vh;align-items: center;color:aliceblue">
+            <div id="logoleft" style="overflow: hidden;">
+                <img src="/img/logo3.png" style="height:60px;position: relative; float:right"> 
+            </div>
+            <div id="logotop" style="overflow: hidden;align-content: center;">
+                <img src="/img/logo3.png" style="max-width:80%;height:60px;position: relative; float:right ">
+                <h2 style="height:60px;position: relative;color:aliceblue;float:right;text-align: center; ">
+                    IOT BASED HEART RATE MONITORING SYSTEM 
+                </h2>
+            </div>
+            <hr>
+            
+            <h3 style="color:aliceblue;display: flex; justify-content: space-evenly;">Hello <%= typeof user.name != 'undefined' ? user.name : '' %></h3>
+            <h3 onclick="startSession()" style="cursor: pointer;background-color: darkgoldenrod;color:aliceblue;display: flex; justify-content: space-evenly;">Click Here to start your scanning session</h3>
+            <div style="width: 50%;text-align:center;color: black; background-color: aqua;float:left;height: 100px;">Heat Beats Per Minute
+            <h2 id="BPM"></h2>
+            </div>
+            <div style="width: 50%;color:black;text-align:center; background-color:azure;float:right;height:100px">SpO2
+            <h2 id="spo2"></h2>
+            </div>
+            
+            <script>
+                var xValues = [];
+                var yValues = [];
+                function updateData(){
+                    var xhttp = new XMLHttpRequest();
+                    xhttp.onreadystatechange = function() {
+                        if (this.readyState == 4 && this.status == 200) {
+                            // Typical action to be performed when the document is ready:
+                            const res=xhttp.responseText
+                            const data= JSON.parse(res)
+                            console.log(data.feeds[0])
+                            if(data.feeds[0].field3=='<%= typeof user.userID != 'undefined' ? user.userID : 0 %>'){
+                                document.getElementById("spo2").innerText=data.feeds[0].field2  
+                                document.getElementById("BPM").innerText=data.feeds[0].field1    
+                            }
+                            
+
+                            }
+                        };
+                    xhttp.open("GET", "https://api.thingspeak.com/channels/<%= typeof user.DeviceID.ChannelID != 'undefined' ? user.DeviceID.ChannelID : '' %>/feeds.json?api_key=<%= typeof user.DeviceID.readAPIKey != 'undefined' ? user.DeviceID.readAPIKey : '' %>&results=1", true);
+                    xhttp.send();
+                    setTimeout(updateData, 5000);
+                }
+                function startSession(){
+                    var xhttp = new XMLHttpRequest();
+                    xhttp.onreadystatechange = function() {
+                        if (this.readyState == 4 && this.status == 200) {
+                            // Typical action to be performed when the document is ready:
+                            alert("Session Started, You can now send your data")
+                            setTimeout(updateData,5000);
+                            }
+                        };
+                    xhttp.open("GET", "https://api.thingspeak.com/update?api_key=<%= typeof user.DeviceID.writeAPIKey != 'undefined' ? user.DeviceID.writeAPIKey : '' %>&status=<%= typeof user.userID != 'undefined' ? user.userID : 0 %>", true);
+                    xhttp.send();
+
+
+                }
+            </script>
+
+            
+            <style>
+
+
+
+
+                .cc {
+                    width: 100%;
+                    display: -webkit-box;
+                    display: -webkit-flex;
+                    display: -moz-box;
+                    display: -ms-flexbox;
+                    display: flex;
+                    flex-wrap: wrap;
+                    justify-content: center;
+                    align-items: center;
+                    background-repeat: no-repeat;
+                    background-position: center;
+                    background-size: cover;
+                    position: relative;
+                    z-index: 1;
+                }
+                
+                        </style>
+            
+    </div>   
+        <div class="w3-half" style="padding:15px;align-items: center;min-height:100vh;align-items: center;background-color:aliceblue">
+            <div id="logoright" style="overflow: hidden;">
+                <h2 style="height:60px;position: relative; ">
+                    IOT BASED HEART RATE MONITORING SYSTEM 
+                </h2>
+                <hr style="border: 1px solid black;">
+            </div>
+            <div id="logotop" style="overflow: hidden;">
+                <br>
+            </div>
+            <h3 style="color:black;display: flex; justify-content: space-evenly;text-align: center;"><b>Project By:-<br>  KAUSAGEN A/L GANASKUMAR
+                (181021056)
+                </b></h3>
+            <div style="color:black;display: flex; justify-content: space-evenly;text-align:center" >Bachelor of Engineering (Computer Engineering) </div>
+
+            <div style="color:black;display: flex; justify-content: space-evenly;text-align:center" ><strong>Faculty of Electronic Engineering Technology (FTKEN) <br>UNIVERSITI MALAYSIA PERLIS
+                </strong></div>
+
+            
+        </div>
+        
+        
+
+        </script>
+    </div>
+    <div class="w3-grayscale" style="align-items: center;height:100%">
+        <a href="/users/settings" style="display:flex;position:fixed;top:15px">
+            <i style="color:aliceblue" id="settings-btn"  class="fa  fa-gear fa-4x"></i>
+        </a>
+    </div>
+
+</div>
+
+
+<style>
+                #canvas{
+                    width: -webkit-fill-available;
+                    padding-top: 0%;
+                    padding-left:10%;
+                    padding-right:10%;
+                    max-height: 400px;
+                }
+
+                #canvas-container {
+                    margin-left: 15%;
+                    padding:15px;
+                    line-height: 0;
+                }
+
+                #logotop{
+                    display:none;
+                }
+            @media   only screen and (max-width: 600px) {
+                #canvas {
+                    width: -webkit-fill-available;
+                    padding-top: 0%;
+                    padding-left:5%;
+                    padding-right:5%;
+                    max-height: 100vw;
+                }
+                #canvas-container {
+                    margin-left: 5%;
+                    padding:5px;
+                    line-height: 0;
+                }
+                #logoright {
+                    display: none;
+                    }
+                #logoleft{
+                    display:none;
+                }
+                #logotop{
+                    display:block;
+                }
+            }
+    #settings-btn {
+        animation: App-logo-spin infinite 5s linear;
+    }
+    #settings-btn:hover {
+        pointer-events: none;
+        color:aqua;
+        animation: App-logo-spin infinite 1s linear;
+    }
+    @media (prefers-reduced-motion: no-preference) {
+        #settings-btn {
+            animation: App-logo-spin infinite 5s linear;
+        }
+    }
+    
+    @keyframes App-logo-spin {
+        from {
+            transform: rotate(0deg);
+        }
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    a:link {
+        color: rgb(0, 0, 0);
+    }
+
+        /* mouse over link */
+    a:hover {
+        color: rgb(105, 115, 255);
+    }
+
+</style>
+

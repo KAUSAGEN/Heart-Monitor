@@ -1,0 +1,59 @@
+
+<style>
+    
+
+    .cc {
+        width: 100%;
+        min-height: 100vh;
+        display: -webkit-box;
+        display: -webkit-flex;
+        display: -moz-box;
+        display: -ms-flexbox;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        padding: 15px;
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: cover;
+        position: relative;
+        z-index: 1;
+    }
+    </style>
+ 
+<div id="abc"  class="limiter background-dark">
+
+    <div class="cc" >
+
+        <div class="wrap-login100 p-t-30 p-b-50">
+            <a  href="/"style="min-width:250px;width:25%;" ><img src="/img/logo1White.png"  alt=""></a>
+            <hr>
+            <span class="login100-form-title p-b-41">
+                Account Login
+            </span>
+            <%- include ('./partials/messages') %>
+            <form action="/users/login" method="POST" class="login100-form validate-form p-b-33 p-t-5">
+
+                <div class="wrap-input100 validate-input" data-validate = "Enter username">
+                    <input class="input100" type="email" name="email" placeholder="Email">
+                    <span class="focus-input100" data-placeholder="&#xe82a;"></span>
+                </div>
+
+                <div class="wrap-input100 validate-input" data-validate="Enter password">
+                    <input class="input100" type="password" name="password" placeholder="Password">
+                    <span class="focus-input100" data-placeholder="&#xe80f;"></span>
+                </div>
+
+                <div class="container-login100-form-btn m-t-32">
+                    <button type="submit" class="login100-form-btn">
+                        Login
+                    </button>
+                </div>
+                <div id="dropDownSelect1" style="color: rgb(0, 0, 0);text-align: center;"><br><a href="/users/register">Create an account</div>
+            </form>
+        </div>
+    </div>
+</div>
+
+

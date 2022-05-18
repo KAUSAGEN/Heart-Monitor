@@ -1,0 +1,321 @@
+<div class="w3-content" style="max-width:100vw;background-color:aliceblue">
+    <div class="w3-grayscale" style="align-items:stretch;height:100%" >
+        <div class="w3-half" style="padding: 15px;align-items: stretch;background-color:black;min-height:100vh;align-items: center;color:aliceblue">
+            <div id="logoleft" style="overflow: hidden;">
+                <img src="/img/logo3.png" style="height:60px;position: relative; float:right"> 
+            </div>
+            <div id="logotop" style="overflow: hidden;">
+                <img src="/img/logo1White.png" style="max-width:80%;height:60px;position: relative; float:right"> 
+            </div>
+            <hr>
+            <h3 style="color:aliceblue;display: flex; justify-content: space-evenly;">Scan from WebCam:</h3>
+            <div id="video-container">
+                <video id="qr-video"></video>
+            </div>
+            <div style="color:aliceblue;display: flex; justify-content: space-evenly;">
+                <b>Select Camera</b>
+                <select id="cam-list">
+                    <option value="environment" selected>Back Camera (default)</option>
+                    <option value="user">Front Camera</option>
+                </select>
+            </div>
+            <div>
+                <button id="flash-toggle" style="color:aliceblue">📸 Flash: <span id="flash-state">off</span></button>
+            </div>
+            <br>
+            <span id="cam-qr-result" style="color:aliceblue;display: flex; justify-content: space-evenly;"></span>
+            <hr>
+            <h3 style="color:aliceblue;display: flex; justify-content: space-evenly;">Scan from File:</h3>
+            <div style="color:aliceblue;display: flex; justify-content: space-evenly;">
+                <input  type="file" id="file-selector">
+            </div>
+
+            <span id="file-qr-result" style="color:aliceblue;display: flex; justify-content: space-evenly;"></span>
+
+
+            <script type="module">
+                import QrScanner from "/js/qr-scanner/qr-scanner.min.js";
+
+                const video = document.getElementById('qr-video');
+                const videoContainer = document.getElementById('video-container');
+                const camHasCamera = document.getElementById('cam-has-camera');
+                const camList = document.getElementById('cam-list');
+                const camHasFlash = document.getElementById('cam-has-flash');
+                const flashToggle = document.getElementById('flash-toggle');
+                const flashState = document.getElementById('flash-state');
+                const camQrResult = document.getElementById('cam-qr-result');
+                const camQrResultTimestamp = document.getElementById('cam-qr-result-timestamp');
+                const fileSelector = document.getElementById('file-selector');
+                const fileQrResult = document.getElementById('file-qr-result');
+                videoContainer.className="default-style";
+                
+                function setResult(label, result) {
+                    console.log(result.data);
+                    label.textContent = result.data;
+                    window.location= result.data;
+                    clearTimeout(label.highlightTimeout);
+                    label.highlightTimeout = setTimeout(() => label.style.color = 'inherit', 100);
+                    
+                }
+                function setResulter(label, result) {
+                    label.textContent = result.data;
+                    clearTimeout(label.highlightTimeout);
+                    label.highlightTimeout = setTimeout(() => label.style.color = 'inherit', 100);
+                    
+                }
+
+                // ####### Web Cam Scanning #######
+
+                const scanner = new QrScanner(video, result => setResult(camQrResult, result), {
+                    onDecodeError: error => {
+                        camQrResult.textContent = error;
+                        camQrResult.style.color = 'inherit';
+                    },
+                    highlightScanRegion: true,
+                    highlightCodeOutline: true,
+                });
+                scanner.setInversionMode("both");
+                const updateFlashAvailability = () => {
+                    scanner.hasFlash().then(hasFlash => {
+                        camHasFlash.textContent = hasFlash;
+                        flashToggle.style.display = hasFlash ? 'inline-block' : 'none';
+                    });
+                };
+
+                scanner.start().then(() => {
+                    updateFlashAvailability();
+                    // List cameras after the scanner started to avoid listCamera's stream and the scanner's stream being requested
+                    // at the same time which can result in listCamera's unconstrained stream also being offered to the scanner.
+                    // Note that we can also start the scanner after listCameras, we just have it this way around in the demo to
+                    // start the scanner earlier.
+                    QrScanner.listCameras(true).then(cameras => cameras.forEach(camera => {
+                        const option = document.createElement('option');
+                        option.value = camera.id;
+                        option.text = camera.label;
+                        camList.add(option);
+                    }));
+                });
+
+                QrScanner.hasCamera().then(hasCamera => camHasCamera.display = "none");
+
+                // for debugging
+                window.scanner = scanner;
+
+
+                camList.addEventListener('change', event => {
+                    scanner.setCamera(event.target.value).then(updateFlashAvailability);
+                });
+                fileSelector.addEventListener('change', event => {
+                    console.log("scanning");
+                    const file = fileSelector.files[0];
+                    if (!file) {
+                        return;
+                    }
+                    QrScanner.scanImage(file, { returnDetailedScanResult: true })
+                        .then(result => setResult(fileQrResult, result))
+                        .catch(e => setResulter(fileQrResult, { data: e || 'No QR code found.' }));
+                });
+
+                flashToggle.addEventListener('click', () => {
+                    scanner.toggleFlash().then(() => flashState.textContent = scanner.isFlashOn() ? 'on' : 'off');
+                });
+
+                document.getElementById('start-button').addEventListener('click', () => {
+                    scanner.start();
+                });
+
+                document.getElementById('stop-button').addEventListener('click', () => {
+                    scanner.stop();
+                });
+
+                // ####### File Scanning #######
+
+
+            </script>
+
+            <style>
+
+
+
+
+                .cc {
+                    width: 100%;
+                    display: -webkit-box;
+                    display: -webkit-flex;
+                    display: -moz-box;
+                    display: -ms-flexbox;
+                    display: flex;
+                    flex-wrap: wrap;
+                    justify-content: center;
+                    align-items: center;
+                    background-repeat: no-repeat;
+                    background-position: center;
+                    background-size: cover;
+                    position: relative;
+                    z-index: 1;
+                }
+                
+                #qr-video{
+                    width: -webkit-fill-available;
+                    max-height: 100vw;
+                }
+
+                #video-container {
+                    line-height: 0;
+                }
+
+            
+
+                #flash-toggle {
+                    display: none;
+                }
+
+                hr {
+                    margin-top: 32px;
+                }
+                input[type="file"] {
+                    display: block;
+                    margin-bottom: 16px;
+                }
+            </style>
+            
+    </div>   
+        <div class="w3-half" style="padding:15px;align-items: center;min-height:100vh;align-items: center;background-color:aliceblue">
+            <div id="logoright" style="overflow: hidden;">
+                <img src="/img/logoName.png" style="height:60px;position: relative; "> 
+            
+                <hr style="border: 1px solid black;">
+            </div>
+            <div id="logotop" style="overflow: hidden;">
+                <br>
+            </div>
+            <h3 style="color:black;display: flex; justify-content: space-evenly;"><b>Generate Qr code </b></h3>
+            <div style="color:black;display: flex; justify-content: space-evenly;" >Please Enter the Row number for which the qr code has to be generated</div>
+            <form>
+                <input id="row" onchange="genQr()" style="border-style: solid;text-align: right;" class="input100" type="Number" name="row" min=2 placeholder="Row">
+            </form>
+            
+            
+            <div id="canvas-container">
+                <div id="canvas"></div>
+            </div>
+            
+            
+            <a id="download" style="display:none" href="" download="qrcode.png">Click here to download the image</a>
+            <hr style="border: 1px solid black;">
+            <button id="download" onclick="updateAll()" >Click here to Update all QR codes in sheet</a>
+            
+        </div>
+        
+        <script type="text/javascript">
+
+            var qrcode = new QRCode(document.getElementById("canvas"), {
+                width : 256,
+                height : 256
+            });
+
+            function genQr(){
+                qrcode.makeCode(window.location.origin+"/data?key=<%=key%>&row="+document.getElementById("row").value);
+                document.getElementById("download").href=document.getElementById("canvas").children[1].src
+                document.getElementById("download").style.display="block"
+            }
+            
+            function updateAll(){
+            if(confirm("Confirm updating all QR in google sheet ")==true){
+            var xhttp = new XMLHttpRequest();
+                xhttp.onreadystatechange = function() {
+                    if (this.readyState == 4 && this.status == 200) {
+                    alert("QRs updated on sheet");
+                    }
+                };
+                xhttp.open("GET", "/updateAll?host="+window.location.host, true);
+                xhttp.send();
+            }}
+
+
+        </script>
+    </div>
+    <div class="w3-grayscale" style="align-items: center;height:100%">
+        <a href="/users/settings" style="display:flex;position:fixed;top:15px">
+            <i style="color:aliceblue" id="settings-btn"  class="fa  fa-gear fa-4x"></i>
+        </a>
+    </div>
+
+</div>
+
+
+<style>
+                #canvas{
+                    width: -webkit-fill-available;
+                    padding-top: 0%;
+                    padding-left:10%;
+                    padding-right:10%;
+                    max-height: 400px;
+                }
+
+                #canvas-container {
+                    margin-left: 15%;
+                    padding:15px;
+                    line-height: 0;
+                }
+
+                #logotop{
+                    display:none;
+                }
+            @media   only screen and (max-width: 600px) {
+                #canvas {
+                    width: -webkit-fill-available;
+                    padding-top: 0%;
+                    padding-left:5%;
+                    padding-right:5%;
+                    max-height: 100vw;
+                }
+                #canvas-container {
+                    margin-left: 5%;
+                    padding:5px;
+                    line-height: 0;
+                }
+                #logoright {
+                    display: none;
+                    }
+                #logoleft{
+                    display:none;
+                }
+                #logotop{
+                    display:block;
+                }
+            }
+    #settings-btn {
+        animation: App-logo-spin infinite 5s linear;
+    }
+    #settings-btn:hover {
+        pointer-events: none;
+        color:aqua;
+        animation: App-logo-spin infinite 1s linear;
+    }
+    @media (prefers-reduced-motion: no-preference) {
+        #settings-btn {
+            animation: App-logo-spin infinite 5s linear;
+        }
+    }
+    
+    @keyframes App-logo-spin {
+        from {
+            transform: rotate(0deg);
+        }
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    a:link {
+        color: rgb(0, 0, 0);
+    }
+
+        /* mouse over link */
+    a:hover {
+        color: rgb(105, 115, 255);
+    }
+
+</style>
+
